@@ -1,16 +1,25 @@
-#' @title tdGBH
-#' @param p.mat a matrix of p values. Rows: features, columns: outcomes.
-#' @param pi0.method a character string of 'lsl','tst' or 'storey'. Default is storey. The name of any method used in estimate.pi0.
-#' @param global.pi0.method a character string of 'lsl','tst' or 'storey'. Default is storey. The name of any method used in estimate.pi0.
-#' @param shrink a number between 0-1. Default is 0.1. A shrinkage factor to reduce the effects of sampling variation,which is the weighted average of the global and group-specific proportions of null hypotheses.
-#' @return The adjusted FDR.
+#' @title Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure
+#'
+#' @description This function applies the two-dimensional group Benjamini-Hochberg (tdGBH) procedure to control the false discovery rate.
+#'
+#' @param p.mat A matrix representing p-values where rows correspond to features and columns to outcomes.
+#'
+#' @param pi0.method A character string specifying the method for \link[structSSI]{estimate.pi0}, chosen from 'lsl', 'tst', or 'storey'. The default is 'storey'.
+#'
+#' @param global.pi0.method A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.
+#'
+#' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
+#'
+#' @return Returns the adjusted p-values.
+#'
 #' @rdname tdGBH
 #' @import structSSI
 #' @import stats
 #' @export tdGBH
 
 
-tdGBH <- function(p.mat, pi0.method = 'storey',global.pi0.method = 'storey', shrink = 0.1){
+
+tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
 
   pi0.method <- match.arg(pi0.method)
   global.pi0.method  <- match.arg( global.pi0.method)
@@ -32,8 +41,7 @@ tdGBH <- function(p.mat, pi0.method = 'storey',global.pi0.method = 'storey', shr
   pi0 <- mean(pi0.og.mat)
   ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
   p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
-  p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o))
-
+  p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o), dimnames = list(rownames(p.mat),colnames(p.mat)))
   return(p.adj)
 }
 

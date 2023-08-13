@@ -11,14 +11,24 @@ procedure for false discovery rate control in Two-Way multiple testing.
 You can install tdGBH like so:
 
 ``` r
-install.packages('tdGBH')
+devtools::install_github("chloelulu/tdGBH")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The input matrix includes raw p-values that represent the association
+between the intake of 214 different nutrients and the abundance of 37
+bacterial genera. Results returns the tdGBH adjusted p values storaged
+in a matrix with the same dimension as the input matrix.
 
 ``` r
 # library(tdGBH)
-## basic example code
+# data(P)
+# res <- tdGBH(P)
 ```
+
+## Reference
+
+Lu Yang, Jun Chen. (2023) 2dGBH: Two-dimensional Group
+Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way
+Multiple Testing.

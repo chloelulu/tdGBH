@@ -2,22 +2,22 @@
 % Please edit documentation in R/tdGBH.R
 \name{tdGBH}
 \alias{tdGBH}
-\title{tdGBH}
+\title{Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure}
 \usage{
 tdGBH(p.mat, pi0.method = "storey", global.pi0.method = "storey", shrink = 0.1)
 }
 \arguments{
-\item{p.mat}{a matrix of p values. Rows: features, columns: outcomes.}
+\item{p.mat}{A matrix representing p-values where rows correspond to features and columns to outcomes.}
 
-\item{pi0.method}{a character string of 'lsl','tst' or 'storey'. The name of any method used in estimate.pi0.}
+\item{pi0.method}{A character string specifying the method for \link[structSSI]{estimate.pi0}, chosen from 'lsl', 'tst', or 'storey'. The default is 'storey'.}
 
-\item{global.pi0.method}{a character string of 'lsl','tst' or 'storey'. The name of any method used in estimate.pi0.}
+\item{global.pi0.method}{A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.}
 
-\item{shrink}{a number between 0-1. A shrinkage factor to reduce the effects of sampling variation,which is the weighted average of the global and group-specific proportions of null hypotheses.}
+\item{shrink}{A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.}
 }
 \value{
-The adjusted FDR.
+Returns the adjusted p-values.
 }
 \description{
-tdGBH
+This function applies the two-dimensional group Benjamini-Hochberg (tdGBH) procedure to control the false discovery rate.
 }
