@@ -4,11 +4,12 @@
 # tdGBH
 
 The goal of tdGBH is to perform two-dimensional group Benjamini-Hochberg
-procedure for false discovery rate control in Two-Way multiple testing.
+procedure for false discovery rate control in Two-Way multiple testing
+test.
 
 ## Installation
 
-You can install the development version of tdGBH like so:
+You can install tdGBH like so:
 
 ``` r
 install.packages('tdGBH')

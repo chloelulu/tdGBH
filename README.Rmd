@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # tdGBH
 
-The goal of tdGBH is to perform two-dimensional group Benjamini-Hochberg procedure for false discovery rate control in Two-Way multiple testing.
+The goal of tdGBH is to perform two-dimensional group Benjamini-Hochberg procedure for false discovery rate control in Two-Way multiple testing test.
 
 ## Installation
 
