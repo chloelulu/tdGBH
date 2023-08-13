@@ -4,8 +4,7 @@
 # tdGBH
 
 The goal of tdGBH is to perform two-dimensional group Benjamini-Hochberg
-procedure for false discovery rate control in Two-Way multiple testing
-test.
+procedure for false discovery rate control in Two-Way multiple testing.
 
 ## Installation
 
