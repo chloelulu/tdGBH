@@ -1,2 +1,0 @@
-load('data-raw/R.Rdata')
-usethis::use_data(data, compress = 'xz', overwrite = T)
