@@ -21,21 +21,31 @@
 #' @export tdGBH
 
 
-estimate.pi0 <- function (pvalues, method, alpha = 0.05, lambda = 0.5) 
-{
-  method <- tolower(method)
-  matched.method <- match.arg(method, c("tst", "lsl", "storey"))
-  if (matched.method == "tst") {
-    return(pi0.tst(pvalues, alpha))
-  }
-  else if (matched.method == "lsl") {
-    return(pi0.lsl(pvalues))
-  }
-  else if (matched.method == "storey") {
-    return(pi0.tail.p(lambda, pvalues))
-  }
-}
+tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
 
+  pi0.method <- match.arg(pi0.method)
+  global.pi0.method  <- match.arg( global.pi0.method)
+
+  pi0 <- estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
+
+  pi0.o <- apply(p.mat, 2, function(x) estimate.pi0(x, method = pi0.method))
+  pi0.g <- apply(p.mat, 1, function(x) estimate.pi0(x, method = pi0.method))
+
+  pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
+  pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
+
+  pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
+  pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))
+
+  sd.r <- (sd(pi0.o) / sqrt(length(pi0.o)))  / (sd(pi0.o) / sqrt(length(pi0.o)) + sd(pi0.g) / sqrt(length(pi0.g)))
+  pi0.og.mat <- sqrt((pi0.o.mat^(2 * sd.r)) * (pi0.g.mat^(2 * (1 - sd.r))))
+
+  pi0 <- mean(pi0.og.mat)
+  ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
+  p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
+  p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o), dimnames = list(rownames(p.mat),colnames(p.mat)))
+  return(p.adj)
+}
 
 pi0.tail.p <- function(lambda, p.values){
   num <- length(which(p.values >= lambda))
@@ -77,31 +87,17 @@ pi0.lsl <- function(p.val){
   }
 }
 
-
-
-tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
-
-  pi0.method <- match.arg(pi0.method)
-  global.pi0.method  <- match.arg( global.pi0.method)
-
-  pi0 <- estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
-
-  pi0.o <- apply(p.mat, 2, function(x) estimate.pi0(x, method = pi0.method))
-  pi0.g <- apply(p.mat, 1, function(x) estimate.pi0(x, method = pi0.method))
-
-  pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
-  pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
-
-  pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
-  pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))
-
-  sd.r <- (sd(pi0.o) / sqrt(length(pi0.o)))  / (sd(pi0.o) / sqrt(length(pi0.o)) + sd(pi0.g) / sqrt(length(pi0.g)))
-  pi0.og.mat <- sqrt((pi0.o.mat^(2 * sd.r)) * (pi0.g.mat^(2 * (1 - sd.r))))
-
-  pi0 <- mean(pi0.og.mat)
-  ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
-  p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
-  p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o), dimnames = list(rownames(p.mat),colnames(p.mat)))
-  return(p.adj)
+estimate.pi0 <- function (pvalues, method, alpha = 0.05, lambda = 0.5) {
+  method <- tolower(method)
+  matched.method <- match.arg(method, c("tst", "lsl", "storey"))
+  if (matched.method == "tst") {
+    return(pi0.tst(pvalues, alpha))
+  }
+  else if (matched.method == "lsl") {
+    return(pi0.lsl(pvalues))
+  }
+  else if (matched.method == "storey") {
+    return(pi0.tail.p(lambda, pvalues))
+  }
 }
 
