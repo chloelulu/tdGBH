@@ -12,14 +12,14 @@
 #'
 #' @return Returns the adjusted p-values.
 #'
-#' @rdname tdGBH
 #' @import structSSI
 #' @import stats
+#' @author Lu Yang and Jun Chen
+#' @references Lu Yang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
 #' @examples
-#' library(tdGBH)
 #' data(P)
 #' p.adj <- tdGBH(P)
-#' @export tdGBH
+#' @export 
 
 
 
