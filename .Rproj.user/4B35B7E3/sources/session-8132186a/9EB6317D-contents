@@ -1,0 +1,58 @@
+#' @title tdGBH
+#' @param data data frame. Rows: gene names; columns must include "avg_log2FC", "pct.1","pct.2", "gene".
+#' @param database data frame. Already cleaned database saved in the package.
+#' @param tissue tissue to be specified. If NULL, tissue will not be specified. User can choose one of:
+#'                "adipose tissue"; "bladder"; "blood"; "bone"; "bone marrow";
+#'                "brain";"breast"; "embryo"; "eye"; "gastrointestinal tract";
+#'                "heart";"kidney";"liver";"lung";"mammary gland";"muscle";
+#'                "other";"ovary";"pancreas";"placenta";"prostate";
+#'                "skin";"spleen";"stomach";"testis";"thymus";"tooth";"uterus".
+#' @param padj.cutoff number between 0-1. Used to filter the genes by FDR adjusted pvalue.
+#' @param pct.cutoff number between 0-1. Genes with pct.1 greater than this number will be remained for later analysis.
+#' @return A list with the elements
+#' \item{res}{A data.frame listed cluster("cluster") with the top N potential celltypes("celltype") with estimated scores "ES.raw", standard errors "ES.se", normalized estimated scores "ES.norm", and markers matched for predicted cell type.}
+#' \item{markers}{A data.frame of cell types scores of each cluster. Row: cluster, Column: annotated cell types.}
+#' \item{tissue}{tissue specified in the analysis.}
+#' \item{annotation.norm}{A data.frame of cell types scores of each cluster. Row: cluster, Column: annotated cell types.}
+#' \item{annotation.mean}{A data.frame of cell types mean of each cluster. Row: cluster, Column: annotated cell types.}
+#' @rdname scMayoMap
+#' @importFrom dplyr summarise
+#' @importFrom dplyr %>%
+#' @importFrom dplyr across
+#' @importFrom dplyr everything
+#' @importFrom tibble column_to_rownames
+#' @importFrom stats na.omit
+#' @importFrom stats sd
+#' @export scMayoMap
+#'
+#'
+#'
+require(structSSI)
+weight_BH2 <- function(p.mat, pi0.method = 'storey', #c('lsl','tst', 'storey')
+                       global.pi0.method = 'storey', shrink = 0.1){#c('lsl','tst', 'storey')
+
+  pi0.method <- match.arg(pi0.method)
+  global.pi0.method  <- match.arg( global.pi0.method )
+
+  pi0 <- structSSI::estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
+
+  pi0.o <- apply(p.mat, 2, function(x) structSSI::estimate.pi0(x, method = pi0.method))
+  pi0.g <- apply(p.mat, 1, function(x) structSSI::estimate.pi0(x, method = pi0.method))
+
+  pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
+  pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
+
+  pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
+  pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))
+
+  sd.r <- (sd(pi0.o) / sqrt(length(pi0.o)))  / (sd(pi0.o) / sqrt(length(pi0.o)) + sd(pi0.g) / sqrt(length(pi0.g)))
+  pi0.og.mat <- sqrt((pi0.o.mat^(2 * sd.r)) * (pi0.g.mat^(2 * (1 - sd.r))))
+
+  pi0 <- mean(pi0.og.mat)
+  ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
+  p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
+  p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o))
+
+  return(list(p.adj = p.adj, pi0 = pi0, pi0.o = pi0.o.mat, pi0.g = pi0.g.mat, pi0.og = pi0.og.mat))
+}
+

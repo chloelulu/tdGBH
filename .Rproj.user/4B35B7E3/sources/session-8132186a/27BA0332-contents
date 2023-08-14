@@ -1,0 +1,36 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# tdGBH
+
+The goal of tdGBH is to perform two-dimensional group Benjamini-Hochberg procedure for false discovery rate control in Two-Way multiple testing.
+
+## Installation
+
+You can install tdGBH like so:
+
+``` r
+install.packages('tdGBH')
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+# library(tdGBH)
+## basic example code
+```
+
