@@ -15,6 +15,10 @@
 #' @rdname tdGBH
 #' @import structSSI
 #' @import stats
+#' @examples
+#' library(tdGBH)
+#' data(P)
+#' p.adj <- tdGBH(P)
 #' @export tdGBH
 
 
