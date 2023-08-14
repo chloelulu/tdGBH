@@ -12,7 +12,6 @@
 #'
 #' @return Returns the adjusted p-values.
 #'
-#' @import structSSI
 #' @import stats
 #' @author Lu Yang and Jun Chen
 #' @references Lu Yang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
@@ -22,16 +21,73 @@
 #' @export tdGBH
 
 
+estimate.pi0 <- function (pvalues, method, alpha = 0.05, lambda = 0.5) 
+{
+  method <- tolower(method)
+  matched.method <- match.arg(method, c("tst", "lsl", "storey"))
+  if (matched.method == "tst") {
+    return(pi0.tst(pvalues, alpha))
+  }
+  else if (matched.method == "lsl") {
+    return(pi0.lsl(pvalues))
+  }
+  else if (matched.method == "storey") {
+    return(pi0.tail.p(lambda, pvalues))
+  }
+}
+
+
+pi0.tail.p <- function(lambda, p.values){
+  num <- length(which(p.values >= lambda))
+  denom <- length(p.values)*(1 - lambda)
+  min(num/denom, 1)
+}
+
+pi0.tst <- function(p.val, alpha = 0.05){
+  alpha.prime <- alpha/(1 + alpha)
+  n_g <- length(p.val)
+  adjustment <- mt.rawp2adjp(p.val, proc = "BH")
+  rejected <- mt.reject(adjustment$adjp, alpha.prime)
+  n.rejected <- rejected$r[,2]
+  (n_g - n.rejected) / n_g
+}
+
+pi0.lsl <- function(p.val){
+  p.val <- sort(p.val)
+  n_g <- length(p.val)
+  
+  i <- 1
+  while(TRUE){
+    if(i >= 2){
+      l_g.i.prev <- l_g.i
+    } else {
+      l_g.i.prev <- Inf
+    }
+    if(p.val[i] < 1){
+      l_g.i <- (n_g + 1 - i)/(1 - p.val[i])
+    } else {
+      return(l_g.i.prev) 
+    }
+    if(l_g.i > l_g.i.prev || i == length(p.val)){
+      pi0 <- (floor(l_g.i) + 1)/n_g
+      pi0 <- min(pi0, 1)
+      return(pi0)
+    }
+    i <- i + 1
+  }
+}
+
+
 
 tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
 
   pi0.method <- match.arg(pi0.method)
   global.pi0.method  <- match.arg( global.pi0.method)
 
-  pi0 <- structSSI::estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
+  pi0 <- estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
 
-  pi0.o <- apply(p.mat, 2, function(x) structSSI::estimate.pi0(x, method = pi0.method))
-  pi0.g <- apply(p.mat, 1, function(x) structSSI::estimate.pi0(x, method = pi0.method))
+  pi0.o <- apply(p.mat, 2, function(x) estimate.pi0(x, method = pi0.method))
+  pi0.g <- apply(p.mat, 1, function(x) estimate.pi0(x, method = pi0.method))
 
   pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
   pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
