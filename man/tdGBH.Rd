@@ -21,10 +21,13 @@ Returns the adjusted p-values.
 \description{
 This function applies the two-dimensional group Benjamini-Hochberg (tdGBH) procedure to control the false discovery rate.
 }
+\examples{
+data(P)
+p.adj <- tdGBH(P)
+}
 \references{
 Lu Yang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
 }
 \author{
-Lu Yang \email{yang.lu@mayo.edu}
-Jun Chen \email{chen.jun2@mayo.edu}
+Lu Yang and Jun Chen
 }

@@ -19,7 +19,7 @@
 #' @examples
 #' data(P)
 #' p.adj <- tdGBH(P)
-#' @export 
+#' @export tdGBH
 
 
 

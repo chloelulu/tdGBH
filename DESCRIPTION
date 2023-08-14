@@ -2,7 +2,7 @@ Package: tdGBH
 Type: Package
 Title: This package implements two-dimensional group Benjamini-Hochberg procedure for false discovery rate control in Two-Way multiple testing 
 Version: 0.1.0
-Author: Lu Yang, Jun Chen
+Author: Lu Yang and Jun Chen
 Maintainer: Lu Yang <luyang1005@gmail.com>
 Description: tdGBH is an FDR control procedure designed to effectively exploit the two-way grouping structure, which is an extension of the AdaptiveGBH procedure for one-way grouping structure.
 License: GPL
