@@ -12,7 +12,7 @@ It requires a matrix of p-values as input, structured with features as
 rows and outcomes as columns. For a comprehensive understanding of
 tdGBH, please refer to the subsequent paper:
 
-Lu Yang, Jun Chen. (2023) 2dGBH: Two-dimensional Group
+Lu Yang, Pei Wang, Jun Chen. (2023) 2dGBH: Two-dimensional Group
 Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way
 Multiple Testing.
 

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 tdGBH is a multiple testing procedure that offers enhanced power over traditional FDR control methods like BH or ST. This is achieved by assigning data-informed weights to each hypothesis. Specifically, tdGBH conducts a two-dimensional group Benjamini-Hochberg procedure, targeting false discovery rate control within Two-Way multiple testing scenarios. It requires a matrix of p-values as input, structured with features as rows and outcomes as columns. For a comprehensive understanding of tdGBH, please refer to the subsequent paper:
 
-Lu Yang, Jun Chen. (2023) 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
+Lu Yang, Pei Wang, Jun Chen. (2023) 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
 
 ## Installation
 
