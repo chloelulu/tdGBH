@@ -12,7 +12,7 @@
 #' 
 #' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
 #'
-#' @param renorm A logical value indicating whether renormalization should be performed on the weighted pvalues, which ensures FDR control for non data-driven weights. The default is FALSE.
+#' @param renorm A logical value indicating whether renormalization should be performed on the weights, which ensures FDR control for non data-driven weights. The default is FALSE.
 #' 
 #' @return Returns the adjusted p-values.
 #'
