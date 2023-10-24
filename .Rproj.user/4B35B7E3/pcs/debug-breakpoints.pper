@@ -1,0 +1,21 @@
+{
+    "debugBreakpointsState": {
+        "breakpoints": [
+            {
+                "id": 0,
+                "path": "~/Documents/Mayo_Research/2022_08_04_pairwiseFDR/tdGBH/R/tdGBH.R",
+                "line_number": 30,
+                "function_steps": "",
+                "function_name": "tdGBH",
+                "state": 2,
+                "editor_state": 2,
+                "editor_line_number": 30,
+                "is_pending_debug_completion": false,
+                "needs_updated_steps": true,
+                "type": 0,
+                "is_package_breakpoint": true,
+                "package_name": "tdGBH"
+            }
+        ]
+    }
+}

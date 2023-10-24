@@ -4,7 +4,14 @@
 \alias{tdGBH}
 \title{Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure}
 \usage{
-tdGBH(p.mat, pi0.method = "storey", global.pi0.method = "storey", shrink = 0.1)
+tdGBH(
+  p.mat,
+  pi0.method = "storey",
+  global.pi0.method = "storey",
+  weight.method = "new",
+  shrink = 0.1,
+  renorm = F
+)
 }
 \arguments{
 \item{p.mat}{A matrix representing p-values where rows correspond to features and columns to outcomes.}
@@ -13,7 +20,11 @@ tdGBH(p.mat, pi0.method = "storey", global.pi0.method = "storey", shrink = 0.1)
 
 \item{global.pi0.method}{A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.}
 
+\item{weight.method}{A character string specifying the method for add the weight, chosen from 'geo', 'ari', or 'new', represents geometric mean,  arithmetic mean, and tdgbh method. The default is 'new'.}
+
 \item{shrink}{A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.}
+
+\item{renorm}{A logical value indicating whether renormalization should be performed on the weights, which ensures FDR control for non data-driven weights. The default is FALSE.}
 }
 \value{
 Returns the adjusted p-values.
@@ -26,8 +37,8 @@ data(P)
 p.adj <- tdGBH(P)
 }
 \references{
-Lu Yang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
+Lu Yang, Pei Wang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
 }
 \author{
-Lu Yang and Jun Chen
+Lu Yang, Pei Wang and Jun Chen
 }
