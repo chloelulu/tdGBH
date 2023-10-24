@@ -2,5 +2,3 @@
 
 export(tdGBH)
 import(stats)
-importFrom(multtest,mt.rawp2adjp)
-importFrom(multtest,mt.reject)
