@@ -72,8 +72,8 @@ pi0.tail.p <- function(lambda, p.values){
 pi0.tst <- function(p.val, alpha = 0.05){
   alpha.prime <- alpha/(1 + alpha)
   n_g <- length(p.val)
-  adjustment <- multtest::mt.rawp2adjp(p.val, proc = "BH")
-  rejected <- multtest::mt.reject(adjustment$adjp, alpha.prime)
+  adjustment <- mt.rawp2adjp(p.val, proc = "BH")
+  rejected <- mt.reject(adjustment$adjp, alpha.prime)
   n.rejected <- rejected$r[,2]
   (n_g - n.rejected) / n_g
 }
