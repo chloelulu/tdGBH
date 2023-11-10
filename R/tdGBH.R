@@ -8,12 +8,8 @@
 #'
 #' @param global.pi0.method A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.
 #'
-#' @param weight.method A character string specifying the method for add the weight, chosen from 'geo', 'ari', or 'new', represents geometric mean,  arithmetic mean, and tdgbh method. The default is 'new'.
-#' 
 #' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
 #'
-#' @param renorm A logical value indicating whether renormalization should be performed on the weights, which ensures FDR control for non data-driven weights. The default is FALSE.
-#' 
 #' @return Returns the adjusted p-values.
 #'
 #' @import stats
@@ -25,7 +21,7 @@
 #' @export tdGBH
 
 
-tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', weight.method = 'new', shrink = 0.1, renorm=F){
+tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
 
   pi0.method <- match.arg(pi0.method, c( 'storey','lsl','tst'))
   global.pi0.method  <- match.arg( global.pi0.method, c( 'storey','lsl','tst'))
@@ -41,23 +37,13 @@ tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', we
   pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
   pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))
 
-  if(weight.method == 'geo') pi0.og.mat <- sqrt(pi0.o.mat * pi0.g.mat)
-  if(weight.method == 'ari') pi0.og.mat <- (pi0.o.mat + pi0.g.mat) / 2
-  if(weight.method == 'new') {
-    sd.r <- (sd(pi0.o) / sqrt(length(pi0.o)))  / (sd(pi0.o) / sqrt(length(pi0.o)) + sd(pi0.g) / sqrt(length(pi0.g)))
-    pi0.og.mat <- sqrt((pi0.o.mat^(2 * sd.r)) * (pi0.g.mat^(2 * (1 - sd.r))))
-  }
-  
+  sd.r <- (sd(pi0.o) / sqrt(length(pi0.o)))  / (sd(pi0.o) / sqrt(length(pi0.o)) + sd(pi0.g) / sqrt(length(pi0.g)))
+  pi0.og.mat <- sqrt((pi0.o.mat^(2 * sd.r)) * (pi0.g.mat^(2 * (1 - sd.r))))
+
   pi0 <- mean(pi0.og.mat)
   ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
-  if (renorm == TRUE) {
-    ws <- ws.og.mat / (1 - pi0)
-    ws <- length(p.mat) / sum(ws) * ws
-    p.ws.mat <- p.mat / ws
-  } else {
-    p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
-  }
-  
+  p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
+
   p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o), dimnames = list(rownames(p.mat),colnames(p.mat)))
   return(p.adj)
 }
@@ -68,6 +54,7 @@ pi0.tail.p <- function(lambda, p.values){
   denom <- length(p.values)*(1 - lambda)
   min(num/denom, 1)
 }
+
 
 pi0.tst <- function(p.val, alpha = 0.05){
   alpha.prime <- alpha/(1 + alpha)
