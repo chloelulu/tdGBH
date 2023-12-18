@@ -8,6 +8,8 @@
 #'
 #' @param global.pi0.method A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.
 #'
+#' @param shrinkage Method for combining weights, 'linear' and 'power', respctively, indicates parameters are combined at linear scale or power scale. 
+#' 
 #' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
 #'
 #' @return Returns the adjusted p-values.
@@ -21,7 +23,7 @@
 #' @export tdGBH
 
 
-tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrink = 0.1){
+tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrinkage ='linear', shrink = 0.1){
 
   pi0.method <- match.arg(pi0.method, c( 'storey','lsl','tst'))
   global.pi0.method  <- match.arg( global.pi0.method, c( 'storey','lsl','tst'))
@@ -30,6 +32,16 @@ tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', sh
 
   pi0.o <- apply(p.mat, 2, function(x) estimate.pi0(x, method = pi0.method))
   pi0.g <- apply(p.mat, 1, function(x) estimate.pi0(x, method = pi0.method))
+  
+  if(shrinkage == 'linear'){
+    pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
+    pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
+  }
+  
+  if(shrinkage == 'power'){
+    pi0.o <-  (pi0.o^(1 - shrink)) * (pi0^shrink)
+    pi0.g <- (pi0.g^(1 - shrink)) * (pi0^shrink)
+  }
 
   pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
   pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
