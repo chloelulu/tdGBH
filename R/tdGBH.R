@@ -8,7 +8,7 @@
 #'
 #' @param global.pi0.method A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.
 #'
-#' @param shrinkage Method for combining weights, 'linear' and 'power', respctively, indicates parameters are combined at linear scale or power scale. 
+#' @param shrinkage Weighted shrinkage method. 'linear' and 'power', respectively, indicates perform weight shrinkage at linear scale or power scale. 
 #' 
 #' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
 #'
