@@ -6,39 +6,36 @@
 \usage{
 tdGBH(
   p.mat,
-  pi0.method = "storey",
-  global.pi0.method = "storey",
-  weight.method = "new",
-  shrink = 0.1,
-  renorm = F
+  pi0.method = c("storey", "lsl", "tst"),
+  global.pi0.method = c("storey", "lsl", "tst"),
+  shrinkage.method = c("linear", "power"),
+  shrinkage.factor = 0.1
 )
 }
 \arguments{
-\item{p.mat}{A matrix representing p-values where rows correspond to features and columns to outcomes.}
+\item{p.mat}{A matrix representing p-values with rows and columns corresponding to the two grouping directions (e.g. genes by cell types).}
 
-\item{pi0.method}{A character string specifying the method for \link[structSSI]{estimate.pi0}, chosen from 'lsl', 'tst', or 'storey'. The default is 'storey'.}
+\item{pi0.method}{A character string of 'lsl', 'tst', or 'storey', specifying the method for estimating the group-specific null proportions. The default is 'storey'.}
 
-\item{global.pi0.method}{A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.}
+\item{global.pi0.method}{A character string of 'lsl', 'tst', or 'storey', specifying the method for estimating the global null proportion. The default is 'storey'.}
 
-\item{weight.method}{A character string specifying the method for add the weight, chosen from 'geo', 'ari', or 'new', represents geometric mean,  arithmetic mean, and tdgbh method. The default is 'new'.}
+\item{shrinkage.method}{A character string of 'linear' and 'power', indicating whether the shrinkage is on the  linear or power scale.}
 
-\item{shrink}{A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.}
-
-\item{renorm}{A logical value indicating whether renormalization should be performed on the weights, which ensures FDR control for non data-driven weights. The default is FALSE.}
+\item{shrinkage.factor}{A numeric value between 0 and 1. The factor determines the degree of shrinkage to the global null proportion estimate (0: no shrinkage, 1: maximum shrinkage, i.e. using the global estimate). The default is 0.1.}
 }
 \value{
-Returns the adjusted p-values.
+Returns the FDR-adjusted p-values.
 }
 \description{
-This function applies the two-dimensional group Benjamini-Hochberg (tdGBH) procedure to control the false discovery rate.
+Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure is a multiple testing procedure that offers enhanced power over traditional FDR control methods when the data presents two-way grouping structure. It reweights the p-values based on the informativeness of the respective grouping directions. It requires a matrix of p-values as input with rows and columns corresponding to the two grouping directions (e.g. genes by cell types).
 }
 \examples{
 data(P)
 p.adj <- tdGBH(P)
 }
 \references{
-Lu Yang, Pei Wang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
+Lu Yang, Pei Wang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing of Genomic Data
 }
 \author{
-Lu Yang, Pei Wang and Jun Chen
+Jun Chen and Lu Yang
 }

@@ -3,31 +3,34 @@
 
 # tdGBH
 
-tdGBH is a multiple testing procedure that offers enhanced power over
-traditional FDR control methods like BH or ST. This is achieved by
-assigning data-informed weights to each hypothesis. Specifically, tdGBH
-conducts a two-dimensional group Benjamini-Hochberg procedure, targeting
-false discovery rate control within Two-Way multiple testing scenarios.
-It requires a matrix of p-values as input, structured with features as
-rows and outcomes as columns. For a comprehensive understanding of
-tdGBH, please refer to the subsequent paper:
+Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure is a multiple
+testing procedure that offers enhanced power over traditional FDR
+control methods when the data presents two-way grouping structure. It
+reweights the p-values based on the informativeness of the respective
+grouping directions. It requires a matrix of p-values as input with rows
+and columns corresponding to the two grouping directions (e.g. genes by
+cell types). For details of the proposed method, please refer to the
+following paper:
 
-Lu Yang, Pei Wang, Jun Chen. (2023) 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing of Genomic Data.
+Lu Yang, Pei Wang, Jun Chen. (2023) 2dGBH: Two-dimensional Group
+Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way
+Multiple Testing of Genomic Data.
 
 ## Installation
 
 You can install tdGBH as follows:
 
 ``` r
+# install.packages("devtools")
 devtools::install_github("chloelulu/tdGBH")
 ```
 
 ## Example
 
-The input matrix includes raw p-values that represent the association
+The input matrix contains the raw p-values from testing the associations
 between the intake of 214 different nutrients and the abundance of 37
-bacterial genera. The results provide the 2dGBH adjusted p-values in a
-matrix that mirrors the dimensions of the original input matrix.
+bacterial genera (Wu et al., 2021, Science). The output is the 2dGBH
+FDR-adjusted p-values (or q-values).
 
 ``` r
 library(tdGBH)

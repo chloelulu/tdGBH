@@ -1,50 +1,51 @@
 #' @title Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure
 #'
-#' @description This function applies the two-dimensional group Benjamini-Hochberg (tdGBH) procedure to control the false discovery rate.
+#' @description Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure is a multiple testing procedure that offers enhanced power over traditional FDR control methods when the data presents two-way grouping structure. It reweights the p-values based on the informativeness of the respective grouping directions. It requires a matrix of p-values as input with rows and columns corresponding to the two grouping directions (e.g. genes by cell types).
 #'
-#' @param p.mat A matrix representing p-values where rows correspond to features and columns to outcomes.
+#' @param p.mat A matrix representing p-values with rows and columns corresponding to the two grouping directions (e.g. genes by cell types).
 #'
-#' @param pi0.method A character string specifying the method for \link[structSSI]{estimate.pi0}, chosen from 'lsl', 'tst', or 'storey'. The default is 'storey'.
+#' @param pi0.method A character string of 'lsl', 'tst', or 'storey', specifying the method for estimating the group-specific null proportions. The default is 'storey'.
 #'
-#' @param global.pi0.method A character string that indicates the method used for the global \link[structSSI]{estimate.pi0}. Possible values are 'lsl', 'tst', or 'storey'. The default is 'storey'.
+#' @param global.pi0.method A character string of 'lsl', 'tst', or 'storey', specifying the method for estimating the global null proportion. The default is 'storey'.
 #'
-#' @param shrinkage Weighted shrinkage method. 'linear' and 'power', respectively, indicates perform weight shrinkage at linear scale or power scale. 
+#' @param shrinkage.method A character string of 'linear' and 'power', indicating whether the shrinkage is on the  linear or power scale. 
 #' 
-#' @param shrink A numeric value between 0 and 1, serving as a shrinkage factor. It is employed to mitigate the impact of sampling variability. The factor determines the weighted average between global and group-specific proportions of null hypotheses. The default is 0.1.
+#' @param shrinkage.factor A numeric value between 0 and 1. The factor determines the degree of shrinkage to the global null proportion estimate (0: no shrinkage, 1: maximum shrinkage, i.e. using the global estimate). The default is 0.1.
 #'
-#' @return Returns the adjusted p-values.
+#' @return Returns the FDR-adjusted p-values.
 #'
 #' @import stats
-#' @author Lu Yang, Pei Wang and Jun Chen
-#' @references Lu Yang, Pei Wang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing.
+#' @author Jun Chen and Lu Yang
+#' @references Lu Yang, Pei Wang, Jun Chen. 2dGBH: Two-dimensional Group Benjamini-Hochberg Procedure for False Discovery Rate Control in Two-Way Multiple Testing of Genomic Data
 #' @examples
 #' data(P)
 #' p.adj <- tdGBH(P)
 #' @export tdGBH
 
 
-tdGBH <- function(p.mat, pi0.method = 'storey', global.pi0.method = 'storey', shrinkage ='linear', shrink = 0.1){
+tdGBH <- function(p.mat, pi0.method = c('storey', 'lsl', 'tst'), global.pi0.method = c('storey', 'lsl', 'tst'), shrinkage.method = c('linear', 'power'), shrinkage.factor = 0.1){
 
   pi0.method <- match.arg(pi0.method, c( 'storey','lsl','tst'))
-  global.pi0.method  <- match.arg( global.pi0.method, c( 'storey','lsl','tst'))
-
+  global.pi0.method  <- match.arg(global.pi0.method, c( 'storey','lsl','tst'))
+  shrinkage.method <- match.arg(shrinkage.method, c('linear', 'power'))
+  
   pi0 <- estimate.pi0(as.vector(p.mat), method =  global.pi0.method)
 
   pi0.o <- apply(p.mat, 2, function(x) estimate.pi0(x, method = pi0.method))
   pi0.g <- apply(p.mat, 1, function(x) estimate.pi0(x, method = pi0.method))
   
-  if(shrinkage == 'linear'){
-    pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
-    pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
+  if(shrinkage.method == 'linear'){
+    pi0.o <- (1 - shrinkage.factor) * pi0.o + shrinkage.factor * pi0
+    pi0.g <- (1 - shrinkage.factor)  * pi0.g + shrinkage.factor * pi0
   }
   
-  if(shrinkage == 'power'){
-    pi0.o <-  (pi0.o^(1 - shrink)) * (pi0^shrink)
-    pi0.g <- (pi0.g^(1 - shrink)) * (pi0^shrink)
+  if(shrinkage.method == 'power'){
+    pi0.o <-  (pi0.o^(1 - shrinkage.factor)) * (pi0^shrinkage.factor)
+    pi0.g <- (pi0.g^(1 - shrinkage.factor)) * (pi0^shrinkage.factor)
   }
 
-  pi0.o <- (1 - shrink) * pi0.o + shrink * pi0
-  pi0.g <- (1 - shrink)  * pi0.g + shrink * pi0
+  pi0.o <- (1 - shrinkage.factor) * pi0.o + shrinkage.factor * pi0
+  pi0.g <- (1 - shrinkage.factor)  * pi0.g + shrinkage.factor * pi0
 
   pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
   pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))

@@ -4,7 +4,7 @@ Title: Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure
 Version: 0.1.0
 Author: Lu Yang, Pei Wang and Jun Chen
 Maintainer: Lu Yang <luyang1005@gmail.com>
-Description: tdGBH is a multiple testing procedure that offers enhanced power over traditional FDR control methods like BH or ST. This is achieved by assigning data-informed weights to each hypothesis. Specifically, tdGBH conducts a two-dimensional group Benjamini-Hochberg procedure, targeting false discovery rate control within Two-Way multiple testing scenarios. It requires a matrix of p-values as input, structured with features as rows and outcomes as columns.
+Description: Two-Dimensional Group Benjamini-Hochberg (tdGBH) Procedure is a multiple testing procedure that offers enhanced power over traditional FDR control methods when the data presents two-way grouping structure. It reweights the p-values based on the informativeness of the respective grouping directions. It requires a matrix of p-values as input with rows and columns corresponding to the two grouping directions (e.g. genes by cell types).
 License: GPL
 Encoding: UTF-8
 LazyData: true
