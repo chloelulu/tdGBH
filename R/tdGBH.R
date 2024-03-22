@@ -44,9 +44,6 @@ tdGBH <- function(p.mat, pi0.method = c('storey', 'lsl', 'tst'), global.pi0.meth
     pi0.g <- (pi0.g^(1 - shrinkage.factor)) * (pi0^shrinkage.factor)
   }
 
-  pi0.o <- (1 - shrinkage.factor) * pi0.o + shrinkage.factor * pi0
-  pi0.g <- (1 - shrinkage.factor)  * pi0.g + shrinkage.factor * pi0
-
   pi0.o.mat <- t(matrix(pi0.o, nrow = length(pi0.o), ncol = length(pi0.g)))
   pi0.g.mat <- matrix(pi0.g, nrow = length(pi0.g), ncol = length(pi0.o))
 
@@ -251,3 +248,4 @@ mt.reject <- function (adjp, alpha)
   }
   list(r = r, which = which)
 }
+
