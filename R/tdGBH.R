@@ -12,6 +12,8 @@
 #' 
 #' @param shrinkage.factor A numeric value between 0 and 1. The factor determines the degree of shrinkage to the global null proportion estimate (0: no shrinkage, 1: maximum shrinkage, i.e. using the global estimate). The default is 0.1.
 #'
+#' @param renorm A logic value of TRUE or FALSE, indicating whether to renormalize weights or not. Default is FALSE.
+#' 
 #' @return Returns the FDR-adjusted p-values.
 #'
 #' @import stats
@@ -23,7 +25,7 @@
 #' @export tdGBH
 
 
-tdGBH <- function(p.mat, pi0.method = c('storey', 'lsl', 'tst'), global.pi0.method = c('storey', 'lsl', 'tst'), shrinkage.method = c('linear', 'power'), shrinkage.factor = 0.1){
+tdGBH <- function(p.mat, pi0.method = c('storey', 'lsl', 'tst'), global.pi0.method = c('storey', 'lsl', 'tst'), shrinkage.method = c('linear', 'power'), shrinkage.factor = 0.1, renorm = F){
 
   pi0.method <- match.arg(pi0.method, c( 'storey','lsl','tst'))
   global.pi0.method  <- match.arg(global.pi0.method, c( 'storey','lsl','tst'))
@@ -52,7 +54,13 @@ tdGBH <- function(p.mat, pi0.method = c('storey', 'lsl', 'tst'), global.pi0.meth
 
   pi0 <- mean(pi0.og.mat)
   ws.og.mat <- (1 - pi0.og.mat) / pi0.og.mat
-  p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
+  if (renorm == TRUE) {
+    ws <- ws.og.mat / (1 - pi0)
+    ws <- length(p.mat) / sum(ws) * ws
+    p.ws.mat <- p.mat / ws
+  } else {
+    p.ws.mat <- p.mat / ws.og.mat * (1 - pi0)
+  }
 
   p.adj <- matrix(p.adjust(as.vector(p.ws.mat), 'BH'), length(pi0.g), length(pi0.o), dimnames = list(rownames(p.mat),colnames(p.mat)))
   return(p.adj)
